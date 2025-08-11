@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
+All colors MUST be HSL. */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 228 22% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 228 22% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 228 22% 15%;
+
+    /* Brand palette (pastel) */
+    --brand-mint: 158 58% 72%;
+    --brand-peach: 18 92% 80%;
+    --brand-blue: 199 90% 85%;
+    --brand-yellow: 50 100% 82%;
+    --coral: 12 86% 61%;
+
+    /* Semantic tokens */
+    --primary: var(--coral);
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 158 44% 90%; /* soft mint */
+    --secondary-foreground: 160 24% 24%;
+
+    --muted: 199 70% 94%; /* baby blue */
+    --muted-foreground: 215 16% 35%;
+
+    --accent: 18 100% 90%; /* peach */
+    --accent-foreground: 22 40% 25%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 22% 90%;
+    --input: 210 22% 90%;
+    --ring: var(--coral);
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 228 22% 15%;
+    --sidebar-primary: var(--coral);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 199 70% 94%;
+    --sidebar-accent-foreground: 228 22% 15%;
+    --sidebar-border: 210 22% 90%;
+    --sidebar-ring: var(--coral);
+
+    /* Shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--coral) / 0.25);
+    --shadow-soft: 0 6px 20px -8px hsl(228 22% 15% / 0.1);
+  }
+
+  .dark {
+    --background: 228 22% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 228 22% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 228 22% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 12 86% 66%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 220 18% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 18% 18%;
+    --muted-foreground: 215 20% 75%;
+
+    --accent: 220 18% 18%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 40.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 18% 24%;
+    --input: 220 18% 24%;
+    --ring: 12 86% 66%;
+
+    --sidebar-background: 228 22% 12%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 12 86% 66%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 18% 18%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 18% 18%;
+    --sidebar-ring: 12 86% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased font-sans;
+  }
+}
+
+@layer utilities {
+  .hover-scale { @apply transition-transform duration-200 hover:scale-105; }
+  .story-link {
+    position: relative;
+  }
+  .story-link::after {
+    content: "";
+    position: absolute; left: 0; bottom: 0; height: 2px; width: 100%;
+    transform-origin: bottom right; transform: scaleX(0);
+    background: hsl(var(--primary)); transition: transform 300ms ease;
+  }
+  .story-link:hover::after { transform-origin: bottom left; transform: scaleX(1); }
+}
