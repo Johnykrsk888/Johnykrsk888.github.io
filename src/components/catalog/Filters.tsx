@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -75,7 +75,6 @@ const CategoryTree = ({ categories, onSelect, selectedSlug }: { categories: Cate
   );
 };
 
-// The component is now controlled by its parent through props
 export const Filters = ({
   products,
   filters,
