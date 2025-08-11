@@ -14,7 +14,7 @@ export const HeroBanner = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-[hsla(var(--brand-blue),0.45)] via-transparent to-[hsla(var(--brand-peach),0.4)]" />
       <div className="absolute inset-0 flex items-center">
         <div className="px-6 md:px-10 max-w-2xl">
-          <h1 className="font-display text-3xl md:text-5xl mb-3">Мир Чудес — игрушки, которые вдохновляют</h1>
+          <h1 className="font-display text-3xl md:text-5xl mb-3">Мир Чудес — игрушки, которые вдохновляют СУПЕР ПУПЕР</h1>
           <p className="text-muted-foreground text-base md:text-lg mb-5">Пастельные цвета, качественные материалы и море радости для детей разных возрастов.</p>
           <Button asChild variant="hero" size="lg" className="hover-scale">
             <Link to="/catalog">Перейти в каталог</Link>
