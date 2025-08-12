@@ -18,6 +18,13 @@ export const ProductCard = ({ product }: { product: Product }) => {
         <Link to={`/product/${product.id}`} className="block">
           <h3 className="font-medium line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
         </Link>
+        <div className="mt-2 text-sm">
+          {product.quantity > 0 ? (
+            <p className="text-green-600">В наличии: {product.quantity} шт.</p>
+          ) : (
+            <p className="text-red-600">Нет в наличии</p>
+          )}
+        </div>
         <div className="mt-2 flex items-center justify-between">
           <div className="text-lg font-semibold">{product.price.toLocaleString('ru-RU')} ₽</div>
           <Button variant="accent" onClick={() => { add(product); toast.success("Добавлено в корзину"); }}>Добавить</Button>
