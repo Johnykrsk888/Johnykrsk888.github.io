@@ -1,11 +1,13 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Filters, FiltersState } from "@/components/catalog/Filters";
+import { Filters, FiltersState, useDefaultPriceRange } from "@/components/catalog/Filters";
 import { ProductCard } from "@/components/products/ProductCard";
 import { products } from "@/data/products";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 const matchesAge = (pMin: number, pMax: number, selected: string) => {
   if (selected === "all") return true;
@@ -14,22 +16,54 @@ const matchesAge = (pMin: number, pMax: number, selected: string) => {
 };
 
 const Catalog = () => {
-  const [params] = useSearchParams();
-  const initialCategory = params.get("category") as any;
-  const q = (params.get("q") || "").toLowerCase();
-  const [filters, setFilters] = useState<FiltersState | null>(null);
+  const [searchParams] = useSearchParams();
+  const q = (searchParams.get("q") || "").toLowerCase();
+  const initialCategorySlug = searchParams.get("category");
+
+  const defaultPriceRange = useDefaultPriceRange(products);
+  const [filters, setFilters] = useState<FiltersState>({ 
+    categorySlug: initialCategorySlug,
+    age: "all", 
+    price: defaultPriceRange 
+  });
+  const [shuffleKey, setShuffleKey] = useState(0);
+
+  // Update filter if URL parameter changes
+  useEffect(() => {
+    setFilters(f => ({ ...f, categorySlug: initialCategorySlug }));
+  }, [initialCategorySlug]);
+
+  // Reset price filter when product list changes
+  useEffect(() => {
+    setFilters(f => ({ ...f, price: defaultPriceRange }));
+  }, [defaultPriceRange]);
+
+  const handleReset = () => {
+    setFilters({ 
+      categorySlug: null, 
+      age: "all", 
+      price: defaultPriceRange 
+    });
+    setShuffleKey(k => k + 1);
+  };
 
   const filtered = useMemo(() => {
-    const f = filters ?? { categories: new Set(initialCategory ? [initialCategory] : []), age: "all", price: [0, Infinity] as [number, number] };
     return products.filter(p => {
-      const byCat = f.categories.size ? f.categories.has(p.category) : true;
-      const byAge = matchesAge(p.ageMin, p.ageMax, f.age);
-      const byPrice = p.price >= f.price[0] && p.price <= f.price[1];
+      const byCategory = filters.categorySlug ? p.categoryPath.includes(filters.categorySlug) : true;
+      const byAge = matchesAge(p.ageMin, p.ageMax, filters.age);
+      const byPrice = p.price >= filters.price[0] && p.price <= filters.price[1];
       const hay = (p.name + " " + p.shortDescription + " " + p.description).toLowerCase();
       const byQuery = q ? hay.includes(q) : true;
-      return byCat && byAge && byPrice && byQuery;
+      return byCategory && byAge && byPrice && byQuery;
     });
-  }, [filters, initialCategory, q]);
+  }, [filters, q]);
+
+  const displayedProducts = useMemo(() => {
+    if (shuffleKey > 0) {
+      return [...filtered].sort(() => Math.random() - 0.5);
+    }
+    return filtered;
+  }, [filtered, shuffleKey]);
 
   return (
     <div>
@@ -41,16 +75,24 @@ const Catalog = () => {
       <Header />
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl mb-6">Каталог</h1>
+        <h1 
+          onClick={handleReset}
+          className={cn(
+            buttonVariants({ variant: "default", size: "lg" }),
+            "font-display text-3xl mb-6 h-auto w-fit cursor-pointer"
+          )}
+        >
+          Каталог
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6">
-          <Filters products={products} onChange={setFilters} />
+          <Filters products={products} filters={filters} setFilters={setFilters} />
           <section>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filtered.map(p => (
+              {displayedProducts.map(p => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
-            {filtered.length === 0 && (
+            {displayedProducts.length === 0 && (
               <p className="text-muted-foreground mt-8">Ничего не найдено. Измените параметры фильтра.</p>
             )}
           </section>
